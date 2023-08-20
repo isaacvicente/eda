@@ -27,6 +27,7 @@ class melhorPivot {
             } else if (array[k] > array[i]) {
                 countI--;
             }
+
             if (array[k] < array[j]) {
                 countJ++;
             } else if (array[k] > array[j]) {
