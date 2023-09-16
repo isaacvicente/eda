@@ -1,6 +1,6 @@
 import java.util.*;
 
-class trimLinkedList {
+class filtraLinkedList {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
 
@@ -8,15 +8,15 @@ class trimLinkedList {
         .stream(sc.nextLine().split(" "))
         .mapToInt(Integer::parseInt).toArray();
 
-    int qntExtremos = Integer.parseInt(sc.nextLine());
+    int elemento = Integer.parseInt(sc.nextLine());
     LinkedList list = new LinkedList(array.length);
 
     for (int i = 0; i < array.length; i++)
         list.addLast(array[i]);
 
-    for (int j = 0; j < qntExtremos; j++) {
-        list.removeFirst();
-        list.removeLast();
+    while (list.contains(elemento)) {
+        int index = list.indexOf(elemento);
+        list.remove(index);
     }
 
     if (list.isEmpty()) {
@@ -150,7 +150,7 @@ class LinkedList {
         Node aux = this.head;
         int i = 0;
 
-        while (aux.next != null) {
+        while (aux != null) {
             if (aux.v == n)
                 return i;
 
