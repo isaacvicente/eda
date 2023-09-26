@@ -3,125 +3,92 @@ import java.util.Scanner;
 class filaComArray {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int capacidade = Integer.parseInt(sc.nextLine());
 
-        Fila fila = new Fila(capacidade);
+        String start = sc.nextLine();
 
-        while (true) {
-            String input = sc.nextLine();
-            if (input.equals("end"))
-                break;
+        Fila fila = new Fila(Integer.parseInt(start));
 
-            String[] arguments = input.split(" ");
-            if (arguments.length > 1) {
-                if (arguments[0].equals("add")) {
-                    try {
-                        fila.add(Integer.parseInt(arguments[1]));
-                    } catch (RuntimeException e) {
-                        System.out.println(e.getMessage());
-                    }
+        String[] entrada = new String[2];
+
+        entrada[0] = "";
+
+        while (!entrada[0].equals("end")) {
+            entrada = sc.nextLine().split(" ");
+
+            if (entrada[0].equals("add")) {
+                fila.add(Integer.parseInt(entrada[1]));
+            } else if (entrada[0].equals("remove")) {
+                fila.remove();
+            } else if (entrada[0].equals("element")) {
+                if (fila.tail > -1) {
+                    System.out.println(fila.array[0]);
+                } else {
+                    System.out.println("empty");
                 }
-            } else {
-                if (input.equals("print")) {
-                    try {
-                        System.out.println(fila.print());
-                    } catch (RuntimeException e) {
-                        System.out.println(e.getMessage());
-                    }
-                } else if (input.equals("element")) {
-                    try {
-                        System.out.println(fila.head());
-                    } catch (RuntimeException e) {
-                        System.out.println(e.getMessage());
-                    }
-                } else if (input.equals("remove")) {
-                    try {
-                        fila.remove();
-                    } catch (RuntimeException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
+            } else if (entrada[0].equals("print")) {
+                System.out.println(fila.print());
             }
+
         }
+
+        sc.close();
     }
 }
 
 class Fila {
-    private int[] fila;
-    private int head, tail, capacidade, elements;
+    int[] array;
+    int tail;
 
-    public Fila(int capacidade) {
-        this.capacidade = capacidade;
-        this.head = -1;
+    public Fila(int size) {
+        this.array = new int[size];
         this.tail = -1;
-        this.fila = new int[capacidade];
     }
 
-    public boolean isEmpty() {
-        return this.capacidade == 0 || (this.head == -1 && this.tail == -1);
-    }
-
-    public boolean isFull() {
-        return this.capacidade == 0 || (this.tail + 1) % this.capacidade == this.head;
-    }
-
-    public void add(int n) {
-        if (isFull()) {
-            throw new RuntimeException("full");
-        } else if (isEmpty()) {
-            this.head++;
-            this.tail++;
-            this.fila[this.tail] = n;
-            this.elements++;
+    public void add(int elem) {
+        if (!isFull()) {
+            this.array[++this.tail] = elem;
         } else {
-            this.tail = (this.tail + 1) % this.capacidade;
-            this.fila[this.tail] = n;
-            this.elements++;
+            System.out.println("full");
         }
     }
 
     public void remove() {
-        if (isEmpty()) {
-            throw new RuntimeException("empty");
-        } else if (this.head == this.tail) {
-            this.head = -1;
-            this.tail = -1;
-            this.elements--;
+        if (!isEmpty()) {
+            switchPositions();
+            this.tail--;
         } else {
-            this.head = (this.head + 1) % this.capacidade;
-            this.elements--;
+            System.out.println("empty");
         }
     }
 
-    public int head() {
-        if (isEmpty()) {
-            throw new RuntimeException("empty");
-        } else {
-            return this.fila[this.head];
+    private void switchPositions() {
+        if (this.tail > 0) {
+            for (int i = 1; i <= this.tail; i++) {
+                this.array[i - 1] = this.array[i];
+            }
         }
+    }
+
+    public boolean isEmpty() {
+        return (this.tail == -1);
+    }
+
+    public boolean isFull() {
+        return (this.tail == this.array.length - 1);
     }
 
     public String print() {
+        String arrayString = "";
+
         if (isEmpty()) {
-            throw new RuntimeException("empty");
-        }
-
-        String result = "";
-
-        int aux = this.head;
-
-        for (int i = 0; i < this.elements; i++) {
-            if (this.elements == 1) {
-                result += this.fila[aux];
-            } else if (i == this.elements - 1) {
-                result += this.fila[aux];
-            } else {
-                result += this.fila[aux] + " ";
+            arrayString = "empty";
+        } else {
+            for (int i = 0; i <= tail; i++) {
+                String elem = Integer.toString(this.array[i]);
+                arrayString += elem + " ";
             }
-
-            aux = (aux + 1) % this.capacidade;
         }
 
-        return result;
+        return arrayString.trim();
     }
 }
